@@ -1,0 +1,123 @@
+﻿@model List<RASPortal.Models.EventViewModel>
+
+<link rel="stylesheet" href="/css/EventCard.css">
+
+<div class="text-white py-2 px-3" style="background-color: #d93a44">
+    <div style="align-items: center; justify-content: center; display: flex">
+        <h1 class="m-3" style="letter-spacing: 10px;">ETKİNLİKLER</h1>
+    </div>
+    <div class="mb-3" style="align-items: center; justify-content: center; display: flex">
+        <button class="btn text-white mx-1" id="pastEventsBtn">Geçmiş Etkinlikler</button>
+        <button class="btn text-white mx-1" id="upcomingEventsBtn">Gelecek Etkinlikler</button>
+        <button class="btn text-white mx-1" id="allEventsBtn">Tüm Etkinlikler</button>
+    </div>
+    <div class="mb-3" style="align-items: center; justify-content: center; display: flex">
+        <select id="societyFilterSelect" class="form-select mx-1" style="width: auto;">
+            <option value="">Tüm Komiteler</option>
+            @{
+                foreach (var society in Enum.GetValues(typeof(RASPortal.Models.EventSocietyType)))
+                {
+                    <option value="@society">@(((RASPortal.Models.EventSocietyType)society).ToFriendlyString())</option>
+                }
+            }
+        </select>
+        <select id="yearFilterSelect" class="form-select mx-1" style="width: auto;">
+            <option value="">Tüm Yıllar</option>
+            @{
+                var years = Model.Select(e => e.EventStartDate.Year).Distinct().OrderByDescending(y => y).ToList();
+                foreach (var year in years)
+                {
+                    <option value="@year">@year</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+<div id="eventCardsContainer">
+    @for (int a = 0; a < (Model.Count + 2) / 3; a++) // Toplam satır sayısını hesapla
+    {
+        <div class="card-container" style="align-items: center; justify-content: center; display: flex">
+            @for (int b = 0; b < 3; b++)
+            {
+                int index = a * 3 + b; // Geçerli indeksi hesapla
+                if (index < Model.Count) // İndeksin sınırların içinde olduğundan emin ol
+                {
+                    <div class="card mx-3 my-3 event-card" data-event-date="@Model[index].EventEndDate.ToString("yyyy-MM-dd HH:mm:ss")" data-event-society="@Model[index].EventSociety.ToString()" data-event-year="@Model[index].EventStartDate.Year">
+                        @if (Model[index].ExistingImages != null && Model[index].ExistingImages.Length > 0)
+                        {
+                            <img src="@Model[index].ExistingImages[0].Substring(Model[index].ExistingImages[0].IndexOf("wwwroot") + "wwwroot".Length).Trim('/')" alt="@Model[index].EventName">
+                        }
+                        else
+                        {
+                            <img src="~/Source/placeholder.png" alt="Etkinlik Resmi Yok">
+                        }
+                        <div class="card-content">
+                            <h1>@Model[index].EventName</h1>
+                            <p>@(Model[index].EventDescription.Length > 100 ? Model[index].EventDescription.Substring(0, 100) + "..." : Model[index].EventDescription)</p>
+                            <div class="details">
+                                <span><strong>Tarih:</strong> @Model[index].EventStartDate.ToString("dd.MM.yyyy HH:mm")</span>
+                                <span><strong>Platform:</strong> @Model[index].EventLocation</span>
+                            </div>
+                            <a asp-action="GetEvent" asp-route-Id="@Model[index].Id" class="card-btn">Detay</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pastEventsBtn = document.getElementById('pastEventsBtn');
+            const upcomingEventsBtn = document.getElementById('upcomingEventsBtn');
+            const allEventsBtn = document.getElementById('allEventsBtn');
+            const eventCards = document.querySelectorAll('.event-card');
+            const eventCardsContainer = document.getElementById('eventCardsContainer');
+            const societyFilterSelect = document.getElementById('societyFilterSelect');
+            const yearFilterSelect = document.getElementById('yearFilterSelect');
+
+            // "Tüm Yıllar"ı varsayılan olarak seç
+            yearFilterSelect.value = ""; // Veya yearFilterSelect.options[0].value;
+
+            function filterEvents(type) {
+                const now = new Date();
+                const selectedSociety = societyFilterSelect.value.toLowerCase();
+                const selectedYear = yearFilterSelect.value;
+
+                eventCards.forEach(card => {
+                    const eventDate = new Date(card.dataset.eventDate);
+                    const society = card.dataset.eventSociety.toLowerCase();
+                    const year = card.dataset.eventYear;
+
+                    let showCard = true;
+
+                    if (type === 'past' && eventDate >= now) {
+                        showCard = false;
+                    } else if (type === 'upcoming' && eventDate < now) {
+                        showCard = false;
+                    }
+
+                    if (selectedSociety && selectedSociety !== '' && society !== selectedSociety) {
+                        showCard = false;
+                    }
+
+                    if (selectedYear && selectedYear !== '' && year != selectedYear) {
+                        showCard = false;
+                    }
+
+                    card.style.display = showCard ? 'block' : 'none';
+                });
+            }
+
+            pastEventsBtn.addEventListener('click', () => filterEvents('past'));
+            upcomingEventsBtn.addEventListener('click', () => filterEvents('upcoming'));
+            allEventsBtn.addEventListener('click', () => filterEvents('all'));
+            societyFilterSelect.addEventListener('change', () => filterEvents('all'));
+            yearFilterSelect.addEventListener('change', () => filterEvents('all'));
+        });
+    </script>
+}

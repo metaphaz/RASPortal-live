@@ -1,0 +1,63 @@
+﻿@model LoginViewModel
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .login-container {
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .img-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .login-box {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
+<div class="login-container">
+    <div class="login-box">
+        <div class="img-container mb-3 my-2">
+            <img class="img-fluid" alt="asd" style="width: 200px; height: 64px; align-self: center" src="~/Source/Portal.png"/>
+        </div>
+        <h2 class="text-center mb-4">Giriş Yap</h2>
+        <form method="post" asp-action="Login">
+            <div class="mb-3">
+                <label class="form-label">Kullanıcı Adı</label>
+                <input asp-for="Username" type="text" class="form-control " id="email" placeholder="Kullanıcı adınızı girin" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Şifre</label>
+                <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Şifrenizi girin" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-check-input" id="rm" type="checkbox" asp-for="RememberMe" value="True"/>
+                <label asp-for="RememberMe">Oturum açık kalsın.</label>
+            </div>
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.ErrorMessage
+                </div>
+            }
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Giriş Yap</button>
+            </div>
+            <div class="mt-3 text-center">
+                <a href="#">Şifrenizi mi unuttunuz?</a>
+            </div>
+            <div class="my-1 text-center">
+                <a asp-action="Register">Kayıt ol!</a>
+            </div>
+        </form>
+    </div>
+</div>

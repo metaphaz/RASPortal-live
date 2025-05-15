@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Mvc.RazorPages
+@model EventViewModel
+
+<link rel="stylesheet" href="/css/GetEvent.css">
+
+<div class="event-container">
+    <div class="event-image">
+        @if (Model.ExistingImages != null && Model.ExistingImages.Length > 0)
+        {
+            <div class="event-image">
+                <img class="single-event-image" src="@Model.ExistingImages[0].Substring(Model.ExistingImages[0].IndexOf("wwwroot") + "wwwroot".Length).Trim('/')" alt="Event Image">
+            </div>
+        }
+        else
+        {
+            <div class="event-image">
+                <img class="single-event-image" src="~/Source/placeholder.png" alt="Etkinlik Resmi Yok">
+            </div>
+        }
+    </div>
+
+    <main class="event-details-section">
+        <h2 class="event-details-title">@Model.EventName</h2>
+        <p class="event-details-text">@Html.Raw(Model.EventDescription)</p>
+    </main>
+
+    <footer class="event-info-section">
+        <div class="event-info-box">
+            <strong>📌 Düzenleyen Komite:</strong>
+            <p>@Model.EventSociety.ToFriendlyString()</p>
+        </div>
+        <div class="event-info-box">
+            <strong>📅 Tarih:</strong>
+            <p>@Model.EventStartDate.ToString("dd MMMM yyyy, HH:mm")</p>
+        </div>
+        <div class="event-info-box">
+            <strong>🌍 Platform:</strong>
+            <p>@Model.EventLocation</p>
+        </div>
+
+        @if (Model.EventEndDate > DateTime.Now)
+        {
+            <a href="@Model.EventRegisterUrl">
+                <button class="event-register-button">🔗 Kayıt Ol</button>
+            </a>
+        }
+    </footer>
+    @if (Model.EventRecordings != null && Model.EventRecordings.Length > 0)
+    {
+        <div class="event-video">
+            <h3>🎥 Etkinlik Kaydı</h3>
+            @foreach (var recordingUrl in Model.EventRecordings)
+            {
+                <iframe
+                    width="560"
+                    height="315"
+                    src="@recordingUrl"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            }
+        </div>
+    }
+</div>

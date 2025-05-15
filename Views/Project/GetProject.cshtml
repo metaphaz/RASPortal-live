@@ -1,0 +1,74 @@
+﻿@model RASPortal.Models.ProjectViewModel
+@using System.IO;
+
+<link rel="stylesheet" href="/css/GetEvent.css">
+
+<div class="event-container">
+    @if (Model.ExistingImages != null && Model.ExistingImages.Length > 0)
+    {
+        <div class="event-image">
+            <img class="single-event-image" src="@Model.ExistingImages[0].Substring(Model.ExistingImages[0].IndexOf("wwwroot") + "wwwroot".Length).Trim('/')" alt="@Model.ProjectName">
+        </div>
+    }
+    else
+    {
+        <div class="event-image">
+            <img class="single-event-image" src="~/Source/placeholder.png" alt="Proje Resmi Yok">
+        </div>
+    }
+
+    <main class="event-details-section">
+        <h2 class="event-details-title">@Model.ProjectName</h2>
+        <p class="event-details-text">@Html.Raw(Model.ProjectDescription)</p>
+
+        @if (Model.ProjectInstructions != null && Model.ProjectInstructions.Any())
+        {
+            <div class="project-instructions-section">
+                <h3>🛠️ Proje Talimatları</h3>
+                @foreach (var item in Model.ProjectInstructions)
+                {
+                    @if (!string.IsNullOrEmpty(item.Text))
+                    {
+                        <p>@item.Text</p>
+                    }
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" alt="Talimat Resmi" style="max-width: 100%; height: auto; display: block; margin: 10px auto;">
+                    }
+                }
+            </div>
+        }
+    </main>
+
+    <footer class="event-info-section">
+        <div class="event-info-box">
+            <strong>📌 Proje Yazarı:</strong>
+            <p>@Model.ProjectAuthor</p>
+        </div>
+        <div class="event-info-box">
+            <strong>📅 Proje Zorluğu:</strong>
+            <p>@Model.ProjectDifficulty</p>
+        </div>
+        <div class="event-info-box">
+            <strong>🏷️ Proje Etiketleri:</strong>
+            <p>@(Model.ProjectTags != null ? string.Join(", ", Model.ProjectTags) : "Yok")</p>
+        </div>
+    </footer>
+
+    @if (Model.ExistingFiles != null && Model.ExistingFiles.Length > 0)
+    {
+        <div class="event-video">
+            <h3>📁 Proje Dosyaları</h3>
+            <ul style="list-style: none; padding: 0; display: inline-block;">
+                @foreach (var file in Model.ExistingFiles)
+                {
+                    <li>
+                        <a href="@file.Substring(file.IndexOf("wwwroot") + "wwwroot".Length).Trim('/')" download="@System.IO.Path.GetFileName(file)" style="display: block; margin: 5px;">
+                            @System.IO.Path.GetFileName(file)
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>

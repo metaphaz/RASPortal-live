@@ -1,0 +1,119 @@
+﻿@model RASPortal.Models.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h2>Kullanıcı Profili</h2>
+
+<!-- Display validation summary -->
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<!-- Profile Picture Display -->
+<div class="profile-picture-container" style="text-align:center; margin-bottom:20px;">
+    @if (!string.IsNullOrEmpty(Model.ProfilePictureFilePath))
+    {
+        <img src="@Model.ProfilePictureFilePath" alt="Profile Picture" style="border-radius:50%; width:150px; height:150px; object-fit:cover;" />
+    }
+    else
+    {
+        <img src="~/images/default-profile.png" alt="Default Profile Picture" style="border-radius:50%; width:150px; height:150px; object-fit:cover;" />
+    }
+</div>
+
+<!-- Resume View Button (if resume exists) -->
+@if (!string.IsNullOrEmpty(Model.ResumeFilePath))
+{
+    <div class="resume-view" style="text-align:center; margin-bottom:20px;">
+        <a class="btn btn-info" target="_blank" href="@Model.ResumeFilePath">Özgeçmişi Görüntüle</a>
+    </div>
+}
+
+<form asp-action="Profile" enctype="multipart/form-data" method="post" id="profileForm">
+    <input type="hidden" asp-for="Id" />
+    <!-- Username (read-only) -->
+    <div class="form-group">
+        <label asp-for="Username" class="control-label"></label>
+        <input asp-for="Username" class="form-control" readonly/>
+    </div>
+
+    <!-- Email (read-only) -->
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" readonly/>
+    </div>
+
+    <!-- First Name -->
+    <div class="form-group">
+        <label asp-for="FirstName" class="control-label"></label>
+        <input asp-for="FirstName" class="form-control editable-field" disabled/>
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-group">
+        <label asp-for="LastName" class="control-label"></label>
+        <input asp-for="LastName" class="form-control editable-field" disabled/>
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <!-- Phone Number -->
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="control-label"></label>
+        <input asp-for="PhoneNumber" class="form-control editable-field" disabled/>
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="form-group">
+        <label asp-for="DateOfBirth" class="control-label"></label>
+        <input asp-for="DateOfBirth" class="form-control editable-field" type="date" disabled/>
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+
+    <!-- Gender -->
+    <div class="form-group">
+        <label asp-for="Gender" class="control-label"></label>
+        <select asp-for="Gender" class="form-control editable-field" asp-items="Html.GetEnumSelectList<RASPortal.Models.GenderType>()" disabled></select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <!-- Profile Picture Upload -->
+    <div class="form-group">
+        <label asp-for="ProfilePictureFile" class="control-label"></label>
+        <input asp-for="ProfilePictureFile" type="file" class="form-control editable-field" disabled/>
+        <span asp-validation-for="ProfilePictureFile" class="text-danger"></span>
+    </div>
+
+    <!-- Resume Upload -->
+    <div class="form-group">
+        <label asp-for="ResumeFile" class="control-label"></label>
+        <input asp-for="ResumeFile" type="file" class="form-control editable-field" disabled/>
+        <span asp-validation-for="ResumeFile" class="text-danger"></span>
+    </div>
+
+    <!-- Toggle button that switches between "Düzenle" (edit) and "Kaydet" (save) -->
+    <button type="button" id="toggleEditButton" class="btn btn-primary mt-3">Düzenle</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // When the toggle button is clicked...
+        document.getElementById("toggleEditButton").addEventListener("click", function (e) {
+            var btn = this;
+            // Check the current text: if it's "Düzenle", switch to edit mode
+            if (btn.innerText.trim() === "Düzenle") {
+                // Enable all editable fields
+                var fields = document.querySelectorAll(".editable-field");
+                fields.forEach(function (field) {
+                    field.removeAttribute("disabled");
+                });
+                btn.innerText = "Kaydet";
+            } else {
+                // If the button says "Kaydet", submit the form
+                document.getElementById("profileForm").submit();
+            }
+        });
+    </script>
+}

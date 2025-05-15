@@ -1,0 +1,71 @@
+﻿/* Genel Tema Renkleri */
+body {
+    background-color: #121212; /* Koyu Gri */
+    color: #e0e0e0; /* Açık Gri */
+}
+
+a {
+    color: #ff5252; /* Kırmızı */
+}
+
+a:hover {
+    color: #ff1744; /* Daha Koyu Kırmızı */
+}
+
+/* Bootstrap Bileşenleri */
+.btn-primary {
+    background-color: #ff5252;
+    border-color: #ff5252;
+}
+
+.btn-primary:hover {
+    background-color: #ff1744;
+    border-color: #ff1744;
+}
+
+.form-control {
+    background-color: #1e1e1e; /* Daha Koyu Gri */
+    border-color: #373737; /* Daha Açık Koyu Gri */
+    color: #e0e0e0;
+}
+
+.form-control:focus {
+    background-color: #272727;
+    border-color: #ff5252;
+    color: #e0e0e0;
+    box-shadow: 0 0 0 0.2rem rgba(255, 82, 82, 0.25);
+}
+
+.form-label {
+    color: #e0e0e0;
+}
+
+.alert-danger {
+    background-color: #270000;
+    border-color: #ff5252;
+    color: #ff5252;
+}
+
+.nav-link {
+    color: #e0e0e0;
+}
+.nav-link:hover {
+    color: #ff5252;
+}
+.navbar{
+    background-color: #1e1e1e;
+}
+
+/* Özel Bileşenler */
+.login-box, .register-box {
+    background-color: #1e1e1e;
+    border-color: #373737;
+}
+
+.password-strength {
+    color: #e0e0e0;
+}
+
+.strength-bar {
+    background-color: #373737;
+}

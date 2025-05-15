@@ -1,0 +1,210 @@
+﻿@model IEnumerable<RASPortal.Models.Event>
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<style>
+    .carousel img {
+        width: 100%; /* Adjust width as needed */
+        max-height: 400px; /* Set a max height */
+        object-fit: cover; /* Ensures the image fits well */
+    }
+
+    /* Full-width bottom overlay for carousel captions */
+    .carousel-caption {
+        position: absolute;
+        bottom: 0; /* Stick to the bottom */
+        left: 0;
+        right: 0; /* Ensure it spans full width */
+        width: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent background */
+        color: white;
+        padding: 15px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.6s ease-in-out; /* Smooth transition */
+    }
+
+    /* Fade in effect when active */
+    .carousel-item.active .carousel-caption {
+        opacity: 1;
+    }
+</style>
+
+@if (Model != null && Model.Any())
+{
+    <div id="eventCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <button type="button" data-bs-target="#eventCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+            }
+        </div>
+        <div class="carousel-inner">
+            @foreach (var (evt, index) in Model.Select((value, i) => (value, i)))
+            {
+                <div class="carousel-item @(index == 0 ? "active" : "")">
+                    @{
+                        string mediaUrl = $"https://via.placeholder.com/1200x400.png?text={Uri.EscapeDataString(evt.EventName)}"; // Default placeholder
+        
+                        if (evt.EventMedia != null && evt.EventMedia.Any())
+                        {
+                            // Take the first media path from the array
+                            string firstMediaPath = evt.EventMedia.FirstOrDefault(p => !string.IsNullOrEmpty(p)); 
+            
+                            if (firstMediaPath != null)
+                            {
+                                // Url.Content() correctly resolves paths starting with "~/" or "/".
+                                // If your paths in EventMedia are already like "/uploads/events/...", 
+                                // Url.Content() will work directly.
+                                // If they are like "uploads/events/...", prepend "~/"
+                                if (firstMediaPath.StartsWith("/"))
+                                {
+                                    mediaUrl = Url.Content(firstMediaPath);
+                                }
+                                else
+                                {
+                                    // It's good practice to store wwwroot-relative paths starting with "/"
+                                    // but this handles cases where they might not.
+                                    mediaUrl = Url.Content($"~/{firstMediaPath}");
+                                }
+                            }
+                        }
+                    }
+                    <img src="@mediaUrl" class="d-block w-100" alt="@evt.EventName">
+                    <div class="carousel-caption">
+                        <h3>@evt.EventName</h3>
+                        <p>
+                            @evt.EventDescription.Substring(0, Math.Min(evt.EventDescription.Length, 150))@if(evt.EventDescription.Length > 150){<text>...</text>}
+                        </p>
+                        <p><small>Tarih: @evt.EventStartDate.ToString("dd MMMM yy") - @evt.EventEndDate.ToString("dd MMMM yy")</small></p>
+                        @if (!string.IsNullOrEmpty(evt.EventRegisterUrl))
+                        {
+                            <p><a href="@evt.EventRegisterUrl" class="btn btn-primary btn-sm mt-2" target="_blank" rel="noopener noreferrer">Kayıt Ol</a></p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <h4>Güncel Etkinlik Bulunmamaktadır</h4>
+        <p>Yeni etkinlikler için bizi takip etmeye devam edin!</p>
+    </div>
+}
+
+
+<section class="container mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h3>Robotics & Automation Society Hakkında</h3>
+            <p class="lead">Misyonumuz, üyelerin, mesleğin ve insanlığın yararına olacak şekilde Robotik ve Otomasyon alanında bilimsel ve teknolojik bilginin geliştirilmesini ve değişimini kolaylaştırmaktır.</p>
+            <p class="lead">Vizyonumuz, Robotik ve Otomasyon alanında en tanınmış ve saygın küresel organizasyon olmaktır.</p>
+            <ul class="list-unstyled">
+                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i>19000+ Üye</li>
+                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i>Yılda 50+ Etkinlik</li>
+                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i>Uluslararası Projeler</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <img src="@Url.Content("~/Source/RasLogo.png")" class="img-fluid rounded" alt="RAS Takımı" style="height: 200px">
+        </div>
+    </div>
+</section>
+
+<section class="bg-primary text-white py-5 mb-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Aramıza Katılın!</h2>
+        <p class="lead mb-4">Yeni beceriler öğrenin, networkünüzü genişletin ve unutulmaz deneyimler edinin.</p>
+        <a href="@Url.Action("Index", "Event")" class="btn btn-light btn-lg">Tüm Etkinlikleri Görüntüle</a>
+    </div>
+</section>
+
+<section class="bg-dark text-white py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Bültenimize Kaydolun</h2>
+        <p class="mb-4">Yeni etkinliklerden haberdar olmak için e-posta adresinizi bırakın</p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="input-group">
+                    <input type="email" class="form-control" placeholder="E-posta adresiniz">
+                    <button class="btn btn-primary" type="submit">Kaydol</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Additional Styles */
+    .event-card {
+        transition: transform 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .event-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .timeline-item {
+        display: flex;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-date {
+        width: 120px;
+        font-weight: 500;
+        color: #666;
+    }
+
+    .testimonial-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* .btn-light class is already defined by Bootstrap, ensure your custom one has higher specificity or is intended to override */
+    /* .btn-light {
+        background: #fff;
+        color: #333;
+    } */
+
+    .bg-primary {
+        background: #2c3e50 !important; /* Your custom primary color */
+    }
+
+    .bg-dark {
+        background: #34495e !important; /* Your custom dark color */
+    }
+
+    @@media (max-width: 768px) {
+        .timeline-item {
+            flex-direction: column;
+        }
+
+        .timeline-date {
+            margin-bottom: 0.5rem;
+        }
+        .carousel-caption h3 {
+            font-size: 1.25rem;
+        }
+        .carousel-caption p {
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Adding FontAwesome for icons in About Section - ensure FontAwesome is linked in your _Layout.cshtml */
+    /* Example: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" /> */
+</style>

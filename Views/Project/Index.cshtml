@@ -1,0 +1,94 @@
+﻿@model List<RASPortal.Models.ProjectViewModel>
+
+<link rel="stylesheet" href="/css/EventCard.css">
+
+<div class="text-white py-2 px-3" style="background-color: #d93a44">
+    <div style="align-items: center; justify-content: center; display: flex">
+        <h1 class="m-3" style="letter-spacing: 10px;">PROJELER</h1>
+    </div>
+    <div class="mb-3" style="align-items: center; justify-content: center; display: flex">
+        <select id="difficultyFilter" class="form-select mx-1" style="width: auto;">
+            <option value="">Tüm Zorluklar</option>
+            @foreach (var difficulty in Enum.GetValues(typeof(RASPortal.Models.ProjectDifficulty)))
+            {
+                <option value="@difficulty">@difficulty</option>
+            }
+        </select>
+        <select id="tagFilter" class="form-select mx-1" style="width: auto;">
+            <option value="">Tüm Etiketler</option>
+            @foreach (var tag in Enum.GetValues(typeof(RASPortal.Models.ProjectTags)))
+            {
+                <option value="@tag">@tag</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div id="projectCardsContainer">
+    @for (int a = 0; a < (Model.Count + 2) / 3; a++)
+    {
+        <div class="card-container" style="align-items: center; justify-content: center; display: flex">
+            @for (int b = 0; b < 3; b++)
+            {
+                int index = a * 3 + b;
+                if (index < Model.Count)
+                {
+                    <div class="card mx-3 my-3 event-card"
+                         data-difficulty="@Model[index].ProjectDifficulty"
+                         data-tags="@(Model[index].ProjectTags != null ? string.Join(",", Model[index].ProjectTags) : "")">
+                        @if (Model[index].ExistingImages != null && Model[index].ExistingImages.Length > 0)
+                        {
+                            <img src="@Model[index].ExistingImages[0].Substring(Model[index].ExistingImages[0].IndexOf("wwwroot") + "wwwroot".Length).Trim('/')" alt="@Model[index].ProjectName">
+                        }
+                        else
+                        {
+                            <img src="~/Source/placeholder.png" alt="Proje Resmi Yok">
+                        }
+                        <div class="card-content">
+                            <h1>@Model[index].ProjectName</h1>
+                            <p>@(Model[index].ProjectDescription.Length > 100 ? Model[index].ProjectDescription.Substring(0, 100) + "..." : Model[index].ProjectDescription)</p>
+                            <div class="details">
+                                <span><strong>Yazar:</strong> @Model[index].ProjectAuthor</span>
+                                <span><strong>Zorluk:</strong> @Model[index].ProjectDifficulty</span>
+                                <span><strong>Etiketler:</strong> @(Model[index].ProjectTags != null ? string.Join(", ", Model[index].ProjectTags) : "Yok")</span>
+                            </div>
+                            <a asp-action="GetProject" asp-route-id="@Model[index].Id" class="card-btn">Detay</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const difficultyFilter = document.getElementById('difficultyFilter');
+            const tagFilter = document.getElementById('tagFilter');
+            const projectCards = document.querySelectorAll('#projectCardsContainer .event-card');
+
+            function filterProjects() {
+                const selectedDifficulty = difficultyFilter.value;
+                const selectedTag = tagFilter.value;
+
+                projectCards.forEach(card => {
+                    const cardDifficulty = card.dataset.difficulty;
+                    const cardTags = card.dataset.tags.split(',');
+
+                    const difficultyMatch = selectedDifficulty === '' || cardDifficulty === selectedDifficulty;
+                    const tagMatch = selectedTag === '' || cardTags.includes(selectedTag);
+
+                    if (difficultyMatch && tagMatch) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            difficultyFilter.addEventListener('change', filterProjects);
+            tagFilter.addEventListener('change', filterProjects);
+        });
+    </script>
+}

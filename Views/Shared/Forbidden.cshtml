@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Yetkisiz Erişim";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 text-danger">403 - Yetkisiz Erişim</h1>
+            <p class="lead">Bu sayfaya erişim yetkiniz bulunmamaktadır. Lütfen giriş yapın veya yetkilendirme isteyin.</p>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary mt-3">Giriş Yap</a>
+        </div>
+    </div>
+</div>
