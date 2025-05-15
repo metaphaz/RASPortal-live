@@ -1,0 +1,83 @@
+﻿/* Genel Konteyner ve Başlıklar */
+.project-details-container {
+    margin-top: 2rem; /* Üst boşluk */
+}
+
+.project-title {
+    margin-bottom: 0.5rem; /* Başlık altı boşluk */
+    font-weight: 600; /* Daha dolgun başlık */
+}
+
+.project-meta-info {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef; /* Hafif bir ayırıcı çizgi */
+    font-weight: 500;
+    font-size: 1.5rem; /* Başlık boyutu */
+}
+
+/* Proje Açıklaması ve Talimatları */
+.project-description,
+.project-instructions-content {
+    font-size: 1.05rem; /* Okunabilirlik için biraz daha büyük font */
+    line-height: 1.7; /* Satır aralığı */
+    white-space: pre-wrap; /* Satır sonlarını ve girintileri koru */
+}
+
+.project-instructions-content {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    font-family: 'Consolas', 'Monaco', 'Courier New', Courier, monospace; /* Kod/talimat için uygun font */
+    overflow-x: auto; /* Uzun satırlar için yatay kaydırma */
+}
+
+/* Etiketler */
+.project-tags .badge {
+    font-size: 0.9rem;
+    padding: 0.4em 0.7em;
+}
+
+/* Proje Dosyası Butonu */
+.project-file-download-btn {
+    font-size: 1.1rem; /* Buton boyutu */
+    padding: 0.6rem 1.2rem;
+}
+
+/* Medya Galerisi ve Carousel */
+.project-media-title {
+    margin-top: 0; /* Yan sütundaki başlık için üst boşluğu sıfırla veya ayarla */
+}
+
+.project-media-carousel .carousel-item img {
+    border: 1px solid #dee2e6;
+    border-radius: .375rem; /* Bootstrap'in genel border-radius'u ile uyumlu */
+    background-color: #f8f9fa; /* Resim yüklenene kadar veya şeffafsa arka plan */
+}
+
+.project-media-carousel .carousel-control-prev-icon,
+.project-media-carousel .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.3); /* İkonların daha görünür olması için */
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.no-media-placeholder img {
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    background-color: #f8f9fa;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: #f8f9fa; /* Hafif arka plan */
+    padding: 0.75rem 1rem;
+    border-radius: .375rem;
+}
